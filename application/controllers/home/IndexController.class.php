@@ -3,7 +3,7 @@
 class IndexController {
     
     public function IndexAction() {
-        $TemplateEngine = new Template();
+        $TemplateEngine = new whitephp\Template();
         $tpl = $TemplateEngine->load("index.tpl");
         $tpl->assign('world', 'World', true);
         $tpl->display();
