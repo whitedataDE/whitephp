@@ -1,9 +1,9 @@
 <?php
-namespace whitephp;
+namespace whitephp\http;
 
 class PostArray
 {
-    function __construct(string $escapemethod = null, string $flags = null, string $encoding = ini_get("default_charset")) 
+    function __construct(string $escapemethod = null, string $flags = null, string $encoding = null) 
     {
         
         $postarray = [];
@@ -12,8 +12,10 @@ class PostArray
         {
                
             case 'htmlspecialchars':
+                
                 if($flags == null) $flags = "ENT_COMPAT | ENT_HTML401";
-             
+                if($encoding == null) $encoding = ini_get("default_charset");
+                
                 foreach (array_keys($_POST) as $key)
                 {
                     $postarray[$key] = strip_tags($_POST[$key]);

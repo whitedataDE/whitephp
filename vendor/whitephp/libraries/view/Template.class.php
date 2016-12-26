@@ -1,5 +1,5 @@
 <?php
-namespace whitephp;
+namespace whitephp\view;
 
 class Template extends \Smarty {
     

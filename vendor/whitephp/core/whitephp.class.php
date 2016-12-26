@@ -68,7 +68,10 @@ class whitephp {
         
         // smarty template
         require_once(SMARTY_PATH . "libs" . DS . "Smarty.class.php");
-        require_once(WHITEPHP_PATH . "libraries" . DS . "Template.class.php");
+        
+        // whitephp classes
+        require_once(WHITEPHP_PATH . "libraries" . DS . "http" . DS . "PostArray.class.php");
+        require_once(WHITEPHP_PATH . "libraries" . DS . "view" . DS . "Template.class.php");
         
     }
     
