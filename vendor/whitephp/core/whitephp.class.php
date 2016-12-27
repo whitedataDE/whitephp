@@ -105,8 +105,15 @@ private static function load($classname){
     if (substr($classname, -10) == "Controller"){
 
         // Controller
+        if(file_exists(CONTROLLER_PATH . MODULE . DS . "$classname.class.php")) {
         require_once CONTROLLER_PATH . MODULE . DS . "$classname.class.php"; 
-
+        }
+        else {
+            header("HTTP/1.0 404 Not Found");
+            echo "HTTP/1.0 404 Not Found";
+            exit;
+        }
+        
     } elseif (substr($classname, -5) == "Model"){
 
         // Model
@@ -122,9 +129,15 @@ private static function load($classname){
         
         $controller_name = CONTROLLER . "Controller";
         $action_name = ACTION . "Action";
-        $controller = new $controller_name;
+        $controller = new $controller_name; 
+        if(method_exists($controller, $action_name)) {
         $controller->$action_name();
-              
+        }
+        else {
+            header("HTTP/1.0 404 Not Found");
+            echo "HTTP/1.0 404 Not Found";
+            exit;            
+        }
         
     }
 
