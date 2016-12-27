@@ -39,21 +39,38 @@ class whitephp {
             array_push($routes, str_replace("/", "", $option["route"]));
         }
         
-        if(in_array($_REQUEST['m'], $routes) && !empty($_REQUEST['m'])) {       
+        // rape $_GET for route params
+        $_GET = explode('/', $_GET["whitephproute"]);
+        
+        if(in_array($_GET[0], $routes) && !empty($_GET[0])) {       
 
-        // Use specified model   
-        define("MODULE", isset($_REQUEST['m']) ? $_REQUEST['m'] : 'Index');
-        define("CONTROLLER", isset($_REQUEST['c']) ? $_REQUEST['c'] : 'Index');
-        define("ACTION", isset($_REQUEST['a']) ? $_REQUEST['a'] : 'index');
+        // Multi Module Page: Use specified Module   
+        define("MODULE", isset($_GET[0]) ? $_GET[0] : 'home');
+        define("CONTROLLER", isset($_GET[1]) ? $_GET[1] : 'Index');
+        define("ACTION", isset($_GET[2]) ? $_GET[2] : 'index');
+
+        // only want params after route params in $_GET and $_REQUEST
+        unset($_GET[0]);
+        unset($_GET[1]);
+        unset($_GET[2]);
+        
         }
         
         else {
-            // Use home model
+            // Single Module Page
             define("MODULE", "home");
-            define("CONTROLLER", isset($_REQUEST['m']) ? $_REQUEST['m'] : 'Index');
-            define("ACTION", isset($_REQUEST['c']) ? $_REQUEST['c'] : 'index');
+            define("CONTROLLER", isset($_GET[0]) ? $_GET[0] : 'Index');
+            define("ACTION", isset($_GET[1]) ? $_GET[1] : 'index');
+
+            // only want params after route params in $_GET and $_REQUEST
+            unset($_GET[0]);
+            unset($_GET[1]);
             
         }
+                
+        // reorganize $_GET and also write into $_REQUEST
+        $_GET = array_values($_GET);
+        $_REQUEST = array_merge ($_REQUEST, $_GET);
         
         // Load core classes    
         require CORE_PATH . "Controller.class.php";

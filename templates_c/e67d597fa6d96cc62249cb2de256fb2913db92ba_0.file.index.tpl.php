@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.30, created on 2016-12-26 19:41:06
+/* Smarty version 3.1.30, created on 2016-12-26 21:30:03
   from "C:\ZendStudioWorkspace\whitephp\application\views\home\index.tpl" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30',
-  'unifunc' => 'content_586172529be156_05434978',
+  'unifunc' => 'content_58618bdb270277_93095154',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_586172529be156_05434978 (Smarty_Internal_Template $_smarty_tpl) {
+function content_58618bdb270277_93095154 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 Hello <?php echo $_smarty_tpl->tpl_vars['world']->value;?>
 !<?php }
