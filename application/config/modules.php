@@ -5,7 +5,8 @@ $modules = array(
         'route' => '/'
             ),
    'api'    => array(
-       'route' => '/api'
+       'route' => '/api',
+       'version-controlled' => true,
    ),
 );
 

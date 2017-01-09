@@ -43,9 +43,22 @@ class whitephp {
         $_GET = explode('/', $_GET["whitephproute"]);
         
         if(in_array($_GET[0], $routes) && !empty($_GET[0])) {       
-
         // Multi Module Page: Use specified Module   
         define("MODULE", isset($_GET[0]) ? $_GET[0] : 'home');
+        
+        if($modules[MODULE]["version-controlled"] == true) {
+            //use versioning
+            define("VERSION", isset($_GET[1]) ? $_GET[1] : 'Index');
+            define("CONTROLLER", isset($_GET[2]) ? $_GET[2] : 'Index');
+            define("ACTION", isset($_GET[3]) ? $_GET[3] : 'index');
+            unset($_GET[3]);
+        }
+        
+        else {
+            define("CONTROLLER", isset($_GET[1]) ? $_GET[1] : 'Index');
+            define("ACTION", isset($_GET[2]) ? $_GET[2] : 'index');
+            
+        }
         define("CONTROLLER", isset($_GET[1]) ? $_GET[1] : 'Index');
         define("ACTION", isset($_GET[2]) ? $_GET[2] : 'index');
 
@@ -59,9 +72,8 @@ class whitephp {
         else {
             // Single Module Page
             define("MODULE", "home");
-            define("CONTROLLER", isset($_GET[0]) ? $_GET[0] : 'Index');
+            define("CONTROLLER", isset($_GET[0]) && !empty($_GET[0]) ? $_GET[0] : 'Index');
             define("ACTION", isset($_GET[1]) ? $_GET[1] : 'index');
-
             // only want params after route params in $_GET and $_REQUEST
             unset($_GET[0]);
             unset($_GET[1]);
@@ -89,6 +101,10 @@ class whitephp {
         // whitephp classes
         require_once(WHITEPHP_PATH . "libraries" . DS . "http" . DS . "PostArray.class.php");
         require_once(WHITEPHP_PATH . "libraries" . DS . "view" . DS . "Template.class.php");
+        require_once(WHITEPHP_PATH . "libraries" . DS . "view" . DS . "SecureSession.class.php");
+        
+        // Register the secure session handler
+        session_set_save_handler(new \whitephp\session\SecureHandler(), true);
         
     }
     
@@ -99,26 +115,49 @@ private static function autoload(){
 
 }
 
-// Define a custom load method
+/**
+ * @param unknown $classname
+ */
 private static function load($classname){
 
     if (substr($classname, -10) == "Controller"){
-
-        // Controller
-        if(file_exists(CONTROLLER_PATH . MODULE . DS . "$classname.class.php")) {
-        require_once CONTROLLER_PATH . MODULE . DS . "$classname.class.php"; 
-        }
-        else {
-            header("HTTP/1.0 404 Not Found");
-            echo "HTTP/1.0 404 Not Found";
-            exit;
-        }
         
-    } elseif (substr($classname, -5) == "Model"){
-
+    
+        if($modules[MODULE]["version-controlled"] == true) {
+            // Controller
+            if(file_exists(CONTROLLER_PATH . MODULE . VERSION . DS . "$classname.class.php")) {
+                require_once CONTROLLER_PATH . MODULE . VERSION . DS . "$classname.class.php";
+            }
+            else {
+                header("HTTP/1.0 404 Not Found");
+                echo "HTTP/1.0 404 Not Found";
+                exit;
+            }            
+         }
+         else {
+            // Controller
+            if(file_exists(CONTROLLER_PATH . MODULE . DS . "$classname.class.php")) {
+                require_once CONTROLLER_PATH . MODULE . DS . "$classname.class.php";
+            }
+            else {
+                header("HTTP/1.0 404 Not Found");
+                echo "HTTP/1.0 404 Not Found";
+                exit;
+            }           
+        }
+            
+        
+    } 
+    elseif (substr($classname, -5) == "Model")  {
+        
         // Model
-        require_once  MODEL_PATH . MODULE . DS . "$classname.class.php";
+        if($modules[MODULE]["version-controlled"] == true) {
+            require_once  MODEL_PATH . MODULE . DS . "$classname.class.php";   
+        } 
         
+        else {
+            require_once  MODEL_PATH . MODULE . DS . "$classname.class.php";
+        }
     }
 
 }

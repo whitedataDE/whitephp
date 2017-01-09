@@ -11,5 +11,6 @@
    RewriteCond %{REQUEST_FILENAME} !-f
 
    RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteCond %{REQUEST_URI} !^/(public)(/.*)?   
 
    RewriteRule ^(.*)$ index.php/?whitephproute=$1 [L]
