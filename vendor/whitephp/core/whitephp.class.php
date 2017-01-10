@@ -104,7 +104,7 @@ class whitephp {
         require_once(WHITEPHP_PATH . "libraries" . DS . "view" . DS . "SecureSession.class.php");
         
         // Register the secure session handler
-        session_set_save_handler(new \whitephp\session\SecureHandler(), true);
+        session_set_save_handler(new \whitephp\session\SecureSession(), true);
         
     }
     
@@ -116,9 +116,9 @@ private static function autoload(){
 }
 
 /**
- * @param unknown $classname
+ * @param String $classname
  */
-private static function load($classname){
+private static function load(string $classname){
 
     if (substr($classname, -10) == "Controller"){
         
