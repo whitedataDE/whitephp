@@ -1,12 +1,9 @@
-<?php
-
-$modules = array(
-    'home' => array(
-        'route' => '/'
-            ),
-   'api'    => array(
-       'route' => '/api',
-       'version-controlled' => true,
-   ),
-);
-
+{
+	"home":	{
+		"route":	"/"
+		},
+	"api":	{
+		"route":	"/api",
+		"version-controlled":	true
+		}
+	}

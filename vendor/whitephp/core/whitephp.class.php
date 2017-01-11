@@ -1,4 +1,6 @@
 <?php
+namespace whitephp;
+
 class whitephp {
     
     public static function run() {
@@ -30,9 +32,21 @@ class whitephp {
         define("LIB_PATH", WHITEPHP_PATH . "libraries" . DS);
         define("HELPER_PATH", WHITEPHP_PATH . "helpers" . DS);
         define("SMARTY_PATH", ROOT . "vendor" . DS . "smarty" . DS . "smarty". DS);
+
+        session_start();    //start session
         
-        // Require modules
-        require CONFIG_PATH . "modules.php";
+        // smarty template
+        require_once(SMARTY_PATH . "libs" . DS . "Smarty.class.php");
+        
+        // whitephp classes
+        require_once(WHITEPHP_PATH . "libraries" . DS . "http" . DS . "PostArray.class.php");
+        require_once(WHITEPHP_PATH . "libraries" . DS . "view" . DS . "Template.class.php");
+        
+        // helper functions
+        require HELPER_PATH . "helpers.inc.php";
+        
+        // Get json module configuration
+        $modules = json_decode(file_get_contents(CONFIG_PATH . "modules.php"), true);
         
         $routes = array();
         foreach($modules as $module=>$option) {
@@ -41,7 +55,6 @@ class whitephp {
         
         // rape $_GET for route params
         $_GET = explode('/', $_GET["whitephproute"]);
-        
         if(in_array($_GET[0], $routes) && !empty($_GET[0])) {       
         // Multi Module Page: Use specified Module   
         define("MODULE", isset($_GET[0]) ? $_GET[0] : 'home');
@@ -49,13 +62,13 @@ class whitephp {
         if($modules[MODULE]["version-controlled"] == true) {
             //use versioning
             define("VERSION", isset($_GET[1]) ? $_GET[1] : 'Index');
-            define("CONTROLLER", isset($_GET[2]) ? $_GET[2] : 'Index');
+            define("CONTROLLER", isset($_GET[2]) && !empty($_GET[2]) ? $_GET[2] : 'Index');
             define("ACTION", isset($_GET[3]) ? $_GET[3] : 'index');
             unset($_GET[3]);
         }
         
         else {
-            define("CONTROLLER", isset($_GET[1]) ? $_GET[1] : 'Index');
+            define("CONTROLLER", isset($_GET[1]) && !empty($_GET[1]) ? $_GET[1] : 'Index');
             define("ACTION", isset($_GET[2]) ? $_GET[2] : 'index');
             
         }
@@ -71,7 +84,9 @@ class whitephp {
         
         else {
             // Single Module Page
-            define("MODULE", "home");
+            
+            // get home page
+            define("MODULE", helpers\array_find_parent($modules, "route", "/"));
             define("CONTROLLER", isset($_GET[0]) && !empty($_GET[0]) ? $_GET[0] : 'Index');
             define("ACTION", isset($_GET[1]) ? $_GET[1] : 'index');
             // only want params after route params in $_GET and $_REQUEST
@@ -92,24 +107,14 @@ class whitephp {
         
         // Load configuration file
         $GLOBALS['config'] = include CONFIG_PATH . "config.php";        
-
-        session_start();    //start session
-        
-        // smarty template
-        require_once(SMARTY_PATH . "libs" . DS . "Smarty.class.php");
-        
-        // whitephp classes
-        require_once(WHITEPHP_PATH . "libraries" . DS . "http" . DS . "PostArray.class.php");
-        require_once(WHITEPHP_PATH . "libraries" . DS . "view" . DS . "Template.class.php");
-        require_once(WHITEPHP_PATH . "libraries" . DS . "view" . DS . "SecureSession.class.php");
-        
+                        
         // Register the secure session handler
-        session_set_save_handler(new \whitephp\session\SecureSession(), true);
+        //session_set_save_handler(new \whitephp\session\SecureSession(), true);
         
     }
     
 // Autoloading
-private static function autoload(){
+private static function autoload()  {
 
     spl_autoload_register(array(__CLASS__,'load'));
 
@@ -118,8 +123,7 @@ private static function autoload(){
 /**
  * @param String $classname
  */
-private static function load(string $classname){
-
+private static function load($classname){
     if (substr($classname, -10) == "Controller"){
         
     
