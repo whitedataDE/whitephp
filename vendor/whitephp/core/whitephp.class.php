@@ -11,6 +11,9 @@ class whitephp {
     
     }
     
+    /**
+     * 
+     */
     private static function init() {
         
         // Define path constants
@@ -55,12 +58,15 @@ class whitephp {
         
         // rape $_GET for route params
         $_GET = explode('/', $_GET["whitephproute"]);
+        
+        // need to support single / home and multiple modules    
         if(in_array($_GET[0], $routes) && !empty($_GET[0])) {       
-        // Multi Module Page: Use specified Module   
+            
+        // Multi Module Page   
         define("MODULE", isset($_GET[0]) ? $_GET[0] : 'home');
         
         if($modules[MODULE]["version-controlled"] == true) {
-            //use versioning
+            // use versioning
             define("VERSION", isset($_GET[1]) ? $_GET[1] : 'Index');
             define("CONTROLLER", isset($_GET[2]) && !empty($_GET[2]) ? $_GET[2] : 'Index');
             define("ACTION", isset($_GET[3]) ? $_GET[3] : 'index');
@@ -83,12 +89,14 @@ class whitephp {
         }
         
         else {
-            // Single Module Page
+            // Single Module or home page
             
             // get home page
             define("MODULE", helpers\array_find_parent($modules, "route", "/"));
+            
             define("CONTROLLER", isset($_GET[0]) && !empty($_GET[0]) ? $_GET[0] : 'Index');
             define("ACTION", isset($_GET[1]) ? $_GET[1] : 'index');
+            
             // only want params after route params in $_GET and $_REQUEST
             unset($_GET[0]);
             unset($_GET[1]);
@@ -112,59 +120,59 @@ class whitephp {
         //session_set_save_handler(new \whitephp\session\SecureSession(), true);
         
     }
-    
-// Autoloading
-private static function autoload()  {
-
-    spl_autoload_register(array(__CLASS__,'load'));
-
-}
-
-/**
- * @param String $classname
- */
-private static function load($classname){
-    if (substr($classname, -10) == "Controller"){
         
+    // Autoloading
+    private static function autoload()  {
     
-        if($modules[MODULE]["version-controlled"] == true) {
-            // Controller
-            if(file_exists(CONTROLLER_PATH . MODULE . VERSION . DS . "$classname.class.php")) {
-                require_once CONTROLLER_PATH . MODULE . VERSION . DS . "$classname.class.php";
-            }
-            else {
-                header("HTTP/1.0 404 Not Found");
-                echo "HTTP/1.0 404 Not Found";
-                exit;
-            }            
-         }
-         else {
-            // Controller
-            if(file_exists(CONTROLLER_PATH . MODULE . DS . "$classname.class.php")) {
-                require_once CONTROLLER_PATH . MODULE . DS . "$classname.class.php";
-            }
-            else {
-                header("HTTP/1.0 404 Not Found");
-                echo "HTTP/1.0 404 Not Found";
-                exit;
-            }           
-        }
+        spl_autoload_register(array(__CLASS__,'load'));
+    
+    }
+    
+    /**
+     * @param String $classname
+     */
+    private static function load($classname){
+        if (substr($classname, -10) == "Controller"){
             
         
-    } 
-    elseif (substr($classname, -5) == "Model")  {
-        
-        // Model
-        if($modules[MODULE]["version-controlled"] == true) {
-            require_once  MODEL_PATH . MODULE . DS . "$classname.class.php";   
+            if($modules[MODULE]["version-controlled"] == true) {
+                // Controller
+                if(file_exists(CONTROLLER_PATH . MODULE . VERSION . DS . "$classname.class.php")) {
+                    require_once CONTROLLER_PATH . MODULE . VERSION . DS . "$classname.class.php";
+                }
+                else {
+                    header("HTTP/1.0 404 Not Found");
+                    echo "HTTP/1.0 404 Not Found";
+                    exit;
+                }            
+             }
+             else {
+                // Controller
+                if(file_exists(CONTROLLER_PATH . MODULE . DS . "$classname.class.php")) {
+                    require_once CONTROLLER_PATH . MODULE . DS . "$classname.class.php";
+                }
+                else {
+                    header("HTTP/1.0 404 Not Found");
+                    echo "HTTP/1.0 404 Not Found";
+                    exit;
+                }           
+            }
+                
+            
         } 
-        
-        else {
-            require_once  MODEL_PATH . MODULE . DS . "$classname.class.php";
+        elseif (substr($classname, -5) == "Model")  {
+            
+            // Model
+            if($modules[MODULE]["version-controlled"] == true) {
+                require_once  MODEL_PATH . MODULE . DS . "$classname.class.php";   
+            } 
+            
+            else {
+                require_once  MODEL_PATH . MODULE . DS . "$classname.class.php";
+            }
         }
+    
     }
-
-}
     
     private static function dispatch() {
         
