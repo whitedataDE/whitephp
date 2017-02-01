@@ -1,5 +1,5 @@
 {
-  "name" : "whitephp",
+  "name" : "whitedata/whitephp",
   "provide" : {
     "smarty/smarty" : "v3.1.30"
   },
