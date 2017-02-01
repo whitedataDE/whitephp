@@ -1,6 +1,6 @@
 {
   "name" : "whitedata/whitephp",
-  "provide" : {
+  "require" : {
     "smarty/smarty" : "v3.1.30"
   },
   "repositories" : [ {
