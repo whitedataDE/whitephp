@@ -17,7 +17,7 @@
         "require": {
             "php": ">=5.2"
         },
-        "time": "2016-08-07 18:46:49",
+        "time": "2016-08-07T18:46:49+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
