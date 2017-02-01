@@ -22,7 +22,7 @@ class whitephp {
         
         define("ROOT", getcwd() . DS);
         define("APP_PATH", ROOT . 'application' . DS);
-        define("WHITEPHP_PATH", ROOT . "vendor" . DS . "whitephp" . DS);
+        define("WHITEPHP_PATH", ROOT . "vendor" . DS . "whitephp" . DS . "whitephp" . DS);
         define("PUBLIC_PATH", ROOT . "public" . DS);
         
         define("CONFIG_PATH", APP_PATH . "config" . DS);
@@ -57,10 +57,11 @@ class whitephp {
         }
         
         // rape $_GET for route params
+        if(isset($_GET["whitephproute"])) {
         $_GET = explode('/', $_GET["whitephproute"]);
-        
+        }
         // need to support single / home and multiple modules    
-        if(in_array($_GET[0], $routes) && !empty($_GET[0])) {       
+        if(isset($_GET[0]) && in_array($_GET[0], $routes) && !empty($_GET[0])) {       
             
         // Multi Module Page   
         define("MODULE", isset($_GET[0]) ? $_GET[0] : 'home');
@@ -135,7 +136,7 @@ class whitephp {
         if (substr($classname, -10) == "Controller"){
             
         
-            if($modules[MODULE]["version-controlled"] == true) {
+            if(isset($modules[MODULE]["version-controlled"]) && $modules[MODULE]["version-controlled"] == true) {
                 // Controller
                 if(file_exists(CONTROLLER_PATH . MODULE . VERSION . DS . "$classname.class.php")) {
                     require_once CONTROLLER_PATH . MODULE . VERSION . DS . "$classname.class.php";
