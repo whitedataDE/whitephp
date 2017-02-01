@@ -3,6 +3,14 @@
   "require" : {
     "smarty/smarty" : "v3.1.30"
   },
+<<<<<<< HEAD
+=======
+ "extra": {
+    "installer-paths": {
+        "./": ["whitephp/whitephp"]
+    }
+}  
+>>>>>>> origin/master
   "repositories" : [ {
     "type" : "composer",
     "url" : "https://packagist.org/"
