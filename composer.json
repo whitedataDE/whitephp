@@ -1,5 +1,5 @@
 {
-  "name" : "whitedata/whitephp",
+  "name" : "whitephp/whitephp",
   "require" : {
     "smarty/smarty" : "v3.1.30"
   },
