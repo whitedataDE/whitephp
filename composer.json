@@ -1,0 +1,10 @@
+{
+  "name" : "whitedata/whitephp",
+  "require" : {
+    "smarty/smarty" : "v3.1.30"
+  },
+  "repositories" : [ {
+    "type" : "composer",
+    "url" : "https://packagist.org/"
+  } ]
+}
