@@ -27,3 +27,16 @@ function array_find_parent($array, $needle_key, $needle_value, $parent = null) {
 
     return false;
 }
+
+
+function directory_find_parent($needle_directory, $path = null) {
+    
+    if(is_dir ($path . $needle_directory)) {
+        return $path . $needle_directory;
+    }
+    else {
+        directory_find_parent($needle_directory, $path . '../');   
+    }
+    
+    
+}

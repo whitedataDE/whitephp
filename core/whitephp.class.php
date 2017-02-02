@@ -23,6 +23,7 @@ class whitephp {
         define("ROOT", getcwd() . DS);
         define("APP_PATH", ROOT . 'application' . DS);
         define("WHITEPHP_PATH", ROOT . "vendor" . DS . "whitephp" . DS . "whitephp" . DS);
+                
         define("PUBLIC_PATH", ROOT . "public" . DS);
         
         define("CONFIG_PATH", APP_PATH . "config" . DS);
@@ -35,7 +36,20 @@ class whitephp {
         define("LIB_PATH", WHITEPHP_PATH . "libraries" . DS);
         define("HELPER_PATH", WHITEPHP_PATH . "helpers" . DS);
         define("SMARTY_PATH", ROOT . "vendor" . DS . "smarty" . DS . "smarty". DS);
-
+        
+        // Get json module configuration
+        $config = json_decode(file_get_contents(CONFIG_PATH . "config.json.php"), true);
+        
+        if($config == false) {
+            throw new \Exception('Your config.json file is invalid.');
+        }        
+        
+        if(isset($config["url"])) {
+            define('USER_PUBLIC_PATH', $config["url"] . "/public/");
+        }
+        else {
+            define('USER_PUBLIC_PATH, "/"');
+        }
         session_start();    //start session
         
         // smarty template
@@ -49,7 +63,11 @@ class whitephp {
         require HELPER_PATH . "helpers.inc.php";
         
         // Get json module configuration
-        $modules = json_decode(file_get_contents(CONFIG_PATH . "modules.php"), true);
+        $modules = json_decode(file_get_contents(CONFIG_PATH . "modules.json.php"), true);
+        
+        if($modules == false) {
+            throw new \Exception('Your modules.json file is invalid.');
+        }
         
         $routes = array();
         foreach($modules as $module=>$option) {
@@ -66,7 +84,7 @@ class whitephp {
         // Multi Module Page   
         define("MODULE", isset($_GET[0]) ? $_GET[0] : 'home');
         
-        if($modules[MODULE]["version-controlled"] == true) {
+        if(isset($modules[MODULE]["version-controlled"]) && $modules[MODULE]["version-controlled"] == true) {
             // use versioning
             define("VERSION", isset($_GET[1]) ? $_GET[1] : 'Index');
             define("CONTROLLER", isset($_GET[2]) && !empty($_GET[2]) ? $_GET[2] : 'Index');
@@ -79,8 +97,6 @@ class whitephp {
             define("ACTION", isset($_GET[2]) ? $_GET[2] : 'index');
             
         }
-        define("CONTROLLER", isset($_GET[1]) ? $_GET[1] : 'Index');
-        define("ACTION", isset($_GET[2]) ? $_GET[2] : 'index');
 
         // only want params after route params in $_GET and $_REQUEST
         unset($_GET[0]);
@@ -112,10 +128,7 @@ class whitephp {
         require CORE_PATH . "Controller.class.php";
         require CORE_PATH . "Loader.class.php";
         //require CORE_PATH . "Model.class.php";
-        
-        
-        // Load configuration file
-        $GLOBALS['config'] = include CONFIG_PATH . "config.php";        
+             
                         
         // Register the secure session handler
         //session_set_save_handler(new \whitephp\session\SecureSession(), true);
@@ -144,6 +157,7 @@ class whitephp {
                 else {
                     header("HTTP/1.0 404 Not Found");
                     echo "HTTP/1.0 404 Not Found";
+                    echo "<br />(Controller not Found)";
                     exit;
                 }            
              }
@@ -155,6 +169,8 @@ class whitephp {
                 else {
                     header("HTTP/1.0 404 Not Found");
                     echo "HTTP/1.0 404 Not Found";
+                    echo "<br />(Controller not Found)";
+                    echo "<br />" . CONTROLLER_PATH . MODULE . DS . "$classname.class.php";
                     exit;
                 }           
             }
