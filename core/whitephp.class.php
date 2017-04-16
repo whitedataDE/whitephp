@@ -211,7 +211,8 @@ class whitephp {
         
     }
     
-    public static function jump($controller_name, $action_name) {
+    public static function jump($module_name = MODULE, $controller_name = CONTROLLER, $action_name = ACTION) {
+        define(MODULE, $module_name);
         define(CONTROLLER, $controller_name);
         define(ACTION, $action_name);
         whitephp::dispatch();
