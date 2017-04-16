@@ -44,8 +44,8 @@ class whitephp {
             throw new \Exception('Your config.json file is invalid.');
         }        
         
-        if(isset($config["url"])) {
-            define('USER_PUBLIC_PATH', $config["url"] . "/public/");
+        if(isset($config["site-url"])) {
+            define('USER_PUBLIC_PATH', $config["site-url"] . "/public/");
         }
         else {
             define('USER_PUBLIC_PATH, "/"');
@@ -56,8 +56,10 @@ class whitephp {
         require_once(SMARTY_PATH . "libs" . DS . "Smarty.class.php");
         
         // whitephp classes
-        require_once(WHITEPHP_PATH . "libraries" . DS . "http" . DS . "PostArray.class.php");
+        require_once(WHITEPHP_PATH . "libraries" . DS . "http" . DS . "PostHandler.class.php");
         require_once(WHITEPHP_PATH . "libraries" . DS . "view" . DS . "Template.class.php");
+        require_once(WHITEPHP_PATH . "database" . DS . "db.class.php");
+        require_once(WHITEPHP_PATH . "database" . DS . "dbLoader.class.php");
         
         // helper functions
         require HELPER_PATH . "helpers.inc.php";
@@ -207,6 +209,12 @@ class whitephp {
             exit;            
         }
         
+    }
+    
+    public static function jump($controller_name, $action_name) {
+        define(CONTROLLER, $controller_name);
+        define(ACTION, $action_name);
+        whitephp::dispatch();
     }
 
 }

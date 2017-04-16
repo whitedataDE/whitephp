@@ -1,5 +1,5 @@
 <?php
-
+namespace whitephp;
 class Loader{
 
     // Load library classes

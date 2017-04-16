@@ -1,8 +1,8 @@
 <?php
-
+namespace whitephp;
 // Base Controller
 
-class Controller{
+class Controller {
 
     protected $loader;
 
